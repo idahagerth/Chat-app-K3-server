@@ -1,5 +1,52 @@
 const sqlite3 = require("sqlite3").verbose();
 const dbFile = "./db/chatDatabas.sqlite";
+const { Client } = require("pg");
+
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+client.connect();
+
+client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  //client.end();
+});
+
+client.query('CREATE TABLE IF NOT EXISTS "users" ("id" TEXT, "name" TEXT);', (error) => {
+  if (error) {
+    console.error(error.message);
+    throw error;
+}
+  return console.log("Table users created");
+});
+
+client.query('CREATE TABLE IF NOT EXISTS "rooms" ("id" SERIAL PRIMARY KEY, "name" TEXT);', (error) => {
+  if (error) {
+    console.error(error.message);
+    throw error;
+}
+  return console.log("Table rooms created");
+});
+
+client.query('CREATE TABLE IF NOT EXISTS "messages" ("id" SERIAL PRIMARY KEY, "name" TEXT);', (error) => {
+  if (error) {
+    console.error(error.message);
+    throw error;
+}
+  return console.log("Table messages created ");
+});
+
+
+
+
+
 
 const chatDb = new sqlite3.Database(dbFile, (error) => {
   if (error) {
