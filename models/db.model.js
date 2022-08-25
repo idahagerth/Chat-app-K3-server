@@ -57,7 +57,7 @@ client.query(
 );
 
 client.query(
-  'CREATE TABLE IF NOT EXISTS "messages" (id SERIAL PRIMARY KEY, "name" TEXT);',
+  'CREATE TABLE IF NOT EXISTS "messages" (id SERIAL PRIMARY KEY, "message" TEXT, "room_id" INT, "user_id" TEXT);',
   (error) => {
     if (error) {
       console.error(error.message);
