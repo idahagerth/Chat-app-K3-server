@@ -1,9 +1,14 @@
-const httpServer = require("http").createServer();
+const httpServer = require("http").createServer((req, res) => {
+  res.writeHead(200, {
+    'Access-Control-Allow-Origin': '*',
+  })
+});
+const cors = require("cors");
+//httpServer.use(cors());
 const io = require("socket.io")(httpServer, {
   cors: {
     origin: "https://chat-app-client-ida.herokuapp.com",
-    methods: ["GET", "POST"],
-    credentials: false 
+    methods: ["GET", "POST"]
   },
 });
 
@@ -13,6 +18,7 @@ let roomMessageDatabase = [];
 const chatDb = require("./models/db.model");
 const saveMessage = require("./models/db.model");
 const logger = require("./middlewares/logger");
+const { appendFile } = require("fs");
 
 function insertRoom(roomName) {
   chatDb.checkRoom(roomName.room);
