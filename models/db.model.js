@@ -41,18 +41,18 @@ client.query(
 );
 
 client.query(
-  'CREATE TABLE IF NOT EXISTS "rooms" ("id" SERIAL PRIMARY KEY, "name" TEXT);',
+  'CREATE TABLE IF NOT EXISTS "rooms" (id SERIAL PRIMARY KEY, "name" TEXT)',
   (error) => {
     if (error) {
       console.error(error.message);
       throw error;
     }
     const sql = "INSERT INTO rooms (name) VALUES ($1)";
-    client.query(sql, "room1");
-    client.query(sql, "room2");
-    client.query(sql, "room3");
+    client.query(sql, ["room1"]);
+    client.query(sql, ["room2"]);
+    client.query(sql, ["room3"]);
 
-    return console.log("Table rooms created");
+    return; //console.log("Table rooms created");
   }
 );
 
