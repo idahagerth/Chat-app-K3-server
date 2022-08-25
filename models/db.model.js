@@ -131,6 +131,7 @@ function saveMessage(room, message, user) {
 function checkRoom(roomName) {
   console.log(roomName)
   const findRoom = `SELECT id FROM rooms WHERE name LIKE ['${roomName}']`;
+  console.log(findRoom)
   client.query(findRoom, (err, data) => {
     if (data) {
       console.log("room exists " + roomName);
