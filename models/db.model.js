@@ -108,16 +108,18 @@ let roomId;
 let userId;
 
 function saveMessage(room, message, user) {
-  const findRoom = `SELECT id FROM rooms WHERE name LIKE ['${room}']`;
-  const findUserId = `SELECT id FROM users WHERE name LIKE ['${user}']`;
+  //const findRoom = `SELECT id FROM rooms WHERE name LIKE ['${room}']`;
+  const findRoom = "SELECT id FROM rooms WHERE name LIKE $1";
+  //const findUserId = `SELECT id FROM users WHERE name LIKE ['${user}']`;
+  const findUserId = "SELECT id FROM users WHERE name LIKE $1";
 
-  client.query(findRoom, (err, data) => {
+  client.query(findRoom, [room], (err, data) => {
     return (roomId = data.id);
   });
   //chatDb.get(findRoom, (err, data) => {
   //return (roomId = data.id);
   //});
-  client.query(findUserId, (err, data) => {
+  client.query(findUserId, [user], (err, data) => {
     return (userId = data.id);
   });
   const insertMessage = `INSERT INTO messages (message, room_id, user_id) VALUES ($1, $2, $3)`;
