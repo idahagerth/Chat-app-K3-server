@@ -5,48 +5,67 @@ const { Client } = require("pg");
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 });
 
 client.connect();
 
-client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
+client.query(
+  "SELECT table_schema,table_name FROM information_schema.tables;",
+  (err, res) => {
+    if (err) throw err;
+    for (let row of res.rows) {
+      console.log(JSON.stringify(row));
+    }
+    //client.end();
   }
-  //client.end();
-});
+);
 
-client.query('CREATE TABLE IF NOT EXISTS "users" ("id" TEXT, "name" TEXT);', (error) => {
-  if (error) {
-    console.error(error.message);
-    throw error;
-}
-  return console.log("Table users created");
-});
+client.query(
+  'CREATE TABLE IF NOT EXISTS "users" ("id" TEXT, "name" TEXT);',
+  (error) => {
+    if (error) {
+      console.error(error.message);
+      throw error;
+    }
+    const sql = "INSERT INTO users (id, name) VALUES ($1, $2)";
+    client.query(sql, ["user1", "user1"]);
+    client.query(sql, ["user2", "user2"]);
+    client.query(sql, ["user3", "user3"]);
 
-client.query('CREATE TABLE IF NOT EXISTS "rooms" ("id" SERIAL PRIMARY KEY, "name" TEXT);', (error) => {
-  if (error) {
-    console.error(error.message);
-    throw error;
-}
-  return console.log("Table rooms created");
-});
+    return;
 
-client.query('CREATE TABLE IF NOT EXISTS "messages" ("id" SERIAL PRIMARY KEY, "name" TEXT);', (error) => {
-  if (error) {
-    console.error(error.message);
-    throw error;
-}
-  return console.log("Table messages created ");
-});
+    //return console.log("Table users created");
+  }
+);
 
+client.query(
+  'CREATE TABLE IF NOT EXISTS "rooms" ("id" SERIAL PRIMARY KEY, "name" TEXT);',
+  (error) => {
+    if (error) {
+      console.error(error.message);
+      throw error;
+    }
+    const sql = "INSERT INTO rooms (name) VALUES ($1)";
+    client.query(sql, "room1");
+    client.query(sql, "room2");
+    client.query(sql, "room3");
 
+    return console.log("Table rooms created");
+  }
+);
 
-
-
+client.query(
+  'CREATE TABLE IF NOT EXISTS "messages" ("id" SERIAL PRIMARY KEY, "name" TEXT);',
+  (error) => {
+    if (error) {
+      console.error(error.message);
+      throw error;
+    }
+    return console.log("Table messages created ");
+  }
+);
 
 const chatDb = new sqlite3.Database(dbFile, (error) => {
   if (error) {
@@ -92,14 +111,17 @@ function saveMessage(room, message, user) {
   const findRoom = `SELECT id FROM rooms WHERE name LIKE "${room}"`;
   const findUserId = `SELECT id FROM users WHERE name LIKE "${user}"`;
 
-  chatDb.get(findRoom, (err, data) => {
+  client.query(findRoom, (err, data) => {
     return (roomId = data.id);
   });
-  chatDb.get(findUserId, (err, data) => {
+  //chatDb.get(findRoom, (err, data) => {
+  //return (roomId = data.id);
+  //});
+  client.query(findUserId, (err, data) => {
     return (userId = data.id);
   });
-  const insertMessage = `INSERT INTO messages (message, room_id, user_id) VALUES (?, ?, ?)`;
-  chatDb.run(insertMessage, [
+  const insertMessage = `INSERT INTO messages (message, room_id, user_id) VALUES ($1, $2, $3)`;
+  client.query(insertMessage, [
     message,
     JSON.stringify(roomId),
     JSON.stringify(userId),
@@ -108,13 +130,13 @@ function saveMessage(room, message, user) {
 
 function checkRoom(roomName) {
   const findRoom = `SELECT id FROM rooms WHERE name LIKE "${roomName}"`;
-  chatDb.get(findRoom, (err, data) => {
+  client.query(findRoom, (err, data) => {
     if (data) {
       console.log("room exists " + roomName);
     } else {
       console.log("room does not exist");
-      const insert = "INSERT INTO rooms (name) VALUES (?)";
-      chatDb.run(insert, roomName);
+      const insert = "INSERT INTO rooms (name) VALUES ($1)";
+      client.query(insert, roomName);
     }
   });
 }
