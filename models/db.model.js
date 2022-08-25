@@ -108,8 +108,8 @@ let roomId;
 let userId;
 
 function saveMessage(room, message, user) {
-  const findRoom = `SELECT id FROM rooms WHERE name LIKE "${room}"`;
-  const findUserId = `SELECT id FROM users WHERE name LIKE "${user}"`;
+  const findRoom = `SELECT id FROM rooms WHERE name LIKE "[${room}]"`;
+  const findUserId = `SELECT id FROM users WHERE name LIKE "[${user}]"`;
 
   client.query(findRoom, (err, data) => {
     return (roomId = data.id);
@@ -129,7 +129,7 @@ function saveMessage(room, message, user) {
 }
 
 function checkRoom(roomName) {
-  const findRoom = `SELECT id FROM rooms WHERE name LIKE "${roomName}"`;
+  const findRoom = `SELECT id FROM rooms WHERE name LIKE "[${roomName}]"`;
   client.query(findRoom, (err, data) => {
     if (data) {
       console.log("room exists " + roomName);
