@@ -128,6 +128,8 @@ function saveMessage(room, message, user) {
     JSON.stringify(roomId),
     JSON.stringify(userId),
   ]);
+  console.log(roomId);
+  console.log(userId);
 }
 
 function checkRoom(roomName) {
