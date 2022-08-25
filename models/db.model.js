@@ -130,9 +130,10 @@ function saveMessage(room, message, user) {
 
 function checkRoom(roomName) {
   console.log(roomName)
-  const findRoom = `SELECT id FROM rooms WHERE name LIKE ['${roomName}']`;
+  //const findRoom = `SELECT id FROM rooms WHERE name LIKE ['${roomName}']`;
+  const findRoom = "SELECT id FROM rooms WHERE name LIKE $1";
   console.log(findRoom)
-  client.query(findRoom, (err, data) => {
+  client.query(findRoom, [roomName], (err, data) => {
     if (data) {
       console.log("room exists " + roomName);
     } else {
