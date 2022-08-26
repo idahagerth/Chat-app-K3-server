@@ -115,20 +115,24 @@ function saveMessage(room, message, user) {
 
   client.query(findRoom, [room], (err, data) => {
     console.log("Room id is " + data.id + " or " + data + " or " + JSON.stringify(data.rows[0].id))
-    return (roomId = data.id);
+    //return (roomId = data.id);
+    return (roomId = JSON.stringify(data.rows[0].id))
   });
   //chatDb.get(findRoom, (err, data) => {
   //return (roomId = data.id);
   //});
   client.query(findUserId, [user], (err, data) => {
     console.log("User id is " + data.id + " or " + data + " or " + JSON.stringify(data.rows[0].id))
-    return (userId = data.id);
+    //return (userId = data.id);
+    return (userId = JSON.stringify(data.rows[0].id))
   });
   const insertMessage = `INSERT INTO messages (message, room_id, user_id) VALUES ($1, $2, $3)`;
   client.query(insertMessage, [
     message,
-    JSON.stringify(roomId),
-    JSON.stringify(userId),
+    //JSON.stringify(roomId),
+    //JSON.stringify(userId),
+    roomId,
+    userId,
   ]);
   console.log(roomId);
   console.log(userId);
