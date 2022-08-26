@@ -7,7 +7,7 @@ const cors = require("cors");
 //httpServer.use(cors());
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "https://chat-app-client-ida.herokuapp.com",
+    origin: "*",
     methods: ["GET", "POST"]
   },
 });
