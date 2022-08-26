@@ -1,14 +1,14 @@
 const httpServer = require("http").createServer((req, res) => {
   res.writeHead(200, {
-    'Access-Control-Allow-Origin': '*',
-  })
+    "Access-Control-Allow-Origin": "*",
+  });
 });
 const cors = require("cors");
-//httpServer.use(cors());
+
 const io = require("socket.io")(httpServer, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
   },
 });
 
@@ -147,4 +147,4 @@ io.on("connection", (socket, data) => {
   });
 });
 
-httpServer.listen(process.env.PORT||4000);
+httpServer.listen(process.env.PORT || 4000);
