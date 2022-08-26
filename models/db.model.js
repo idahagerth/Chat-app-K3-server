@@ -114,14 +114,14 @@ function saveMessage(room, message, user) {
   const findUserId = "SELECT id FROM users WHERE name LIKE $1";
 
   client.query(findRoom, [room], (err, data) => {
-    console.log("Room id is " + data.id + " or " + data + " or " + JSON.stringify(data))
+    console.log("Room id is " + data.id + " or " + data + " or " + JSON.stringify(data[0].id))
     return (roomId = data.id);
   });
   //chatDb.get(findRoom, (err, data) => {
   //return (roomId = data.id);
   //});
   client.query(findUserId, [user], (err, data) => {
-    console.log("User id is " + data.id + " or " + data + " or " + JSON.stringify(data))
+    console.log("User id is " + data.id + " or " + data + " or " + JSON.stringify(data[0].id))
     return (userId = data.id);
   });
   const insertMessage = `INSERT INTO messages (message, room_id, user_id) VALUES ($1, $2, $3)`;
