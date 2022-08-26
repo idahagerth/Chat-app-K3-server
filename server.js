@@ -131,6 +131,7 @@ io.on("connection", (socket, data) => {
       youGotMail.message,
       youGotMail.user
     );
+    console.log(youGotMail.room + " " + youGotMail.user);
 
     console.log(JSON.parse(data).room);
     console.log(`${socket.id} Have sent ${data}`);
